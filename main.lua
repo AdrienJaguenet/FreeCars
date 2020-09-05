@@ -16,7 +16,7 @@ end
 
 function newCar()
 	return {
-		x = xFromLane(math.random(0,settings.N_LANES + 1)),
+		lane = math.random(0,settings.N_LANES + 1),
 		y = 0
 	}
 end
@@ -24,7 +24,7 @@ end
 function love.load()
 	settings.lane_width = love.graphics.getWidth() / 4
 	settings.car_radius = settings.lane_width / 2 - settings.lane_width / 10
-	player = {x = xFromLane(2), y = love.graphics.getHeight(), lane=2}
+	player = {y = love.graphics.getHeight(), lane=2}
 	cars = {
 		newCar(),
 	}
@@ -33,12 +33,18 @@ end
 function love.update(dt)
 	local n = #cars
 	local missing_cars = 0
+
+	-- update cars
+
 	for i=1,n do
 		local c = cars[i]
 		c.y = c.y + 250 * dt
 	end
 
 	filter_inplace(cars, function(c) return c.y < love.graphics.getHeight() end)
+
+
+	-- Spawn a new car if no collision would be created
 
 	if #cars < settings.MAX_CARS then
 		local c = newCar()
@@ -50,6 +56,14 @@ function love.update(dt)
 		end
 		if not collision then
 			table.insert(cars, newCar())
+		end
+	end
+
+	-- Check for a collision with the player
+	local collision = false
+	for k, c in pairs(cars) do
+		if c.lane == player.lane and math.abs(c.y - player.y) then
+			print('GAME OVER')
 		end
 	end
 end
@@ -70,14 +84,12 @@ end
 function love.keypressed(key)
 	if key == 'left' then
 		player.lane = math.max(player.lane - 1, 0)
-		player.x = xFromLane(player.lane)
 	elseif key == 'right'  then
 		player.lane = math.min(player.lane + 1, settings.N_LANES)
-		player.x = xFromLane(player.lane)
 	end
 end
 
 function drawCar(c)
-	love.graphics.circle('fill', c.x, c.y, settings.car_radius)
+	love.graphics.circle('fill', xFromLane(c.lane), c.y, settings.car_radius)
 end
 
