@@ -85,7 +85,7 @@ function love.keypressed(key)
 	if key == 'left' then
 		player.lane = math.max(player.lane - 1, 0)
 	elseif key == 'right'  then
-		player.lane = math.min(player.lane + 1, settings.N_LANES)
+		player.lane = math.min(player.lane + 1, settings.N_LANES - 1)
 	end
 end
 
