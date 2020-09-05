@@ -29,13 +29,16 @@ function love.load()
 end
 
 function love.update(dt)
+	if settings.game_over == true then
+		return
+	end
+
 	local n = #cars
 	local missing_cars = 0
 
 	-- update cars
 
-	for i=1,n do
-		local c = cars[i]
+	for k, c in pairs(cars) do
 		c.y = c.y + 250 * dt
 	end
 
@@ -66,7 +69,7 @@ function love.update(dt)
 		end
 	end
 	if collision == true then
-		cars = {}
+		settings.game_over = true
 		player = {lane = 2, score = 0}
 	end
 
@@ -75,14 +78,20 @@ function love.update(dt)
 end
 
 function love.draw()
-	love.graphics.setColor(0, 0, 1)
-	love.graphics.print("Score: "..player.score, 0, 0)
-	love.graphics.setColor(1, 0, 0)
-	for k,c in pairs(cars) do
-		drawCar(c)
+	if not settings.game_over then
+		love.graphics.setColor(0, 0, 1)
+		love.graphics.print("Score: "..player.score, 0, 0)
+		love.graphics.setColor(1, 0, 0)
+		for k,c in pairs(cars) do
+			drawCar(c)
+		end
+		love.graphics.setColor(0, 1, 0)
+		drawCar(player)
+	else
+		cars = {}
+		love.graphics.setColor(0, 0, 1)
+		love.graphics.print("GAME OVER!\nScore: "..player.score, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
 	end
-	love.graphics.setColor(0, 1, 0)
-	drawCar(player)
 end
 
 function xFromLane(n)
@@ -94,6 +103,8 @@ function love.keypressed(key)
 		player.lane = math.max(player.lane - 1, 0)
 	elseif key == 'right'  then
 		player.lane = math.min(player.lane + 1, settings.N_LANES - 1)
+	elseif key == 'space' then
+		settings.game_over = false
 	end
 end
 
