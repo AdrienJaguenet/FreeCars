@@ -1,5 +1,3 @@
-player = {}
-cars = {}
 settings = {N_LANES = 4, MAX_CARS=10}
 
 function filter_inplace(arr, func)
@@ -24,7 +22,7 @@ end
 function love.load()
 	settings.lane_width = love.graphics.getWidth() / 4
 	settings.car_radius = settings.lane_width / 2 - settings.lane_width / 10
-	player = {y = love.graphics.getHeight(), lane=2}
+	player = {y = love.graphics.getHeight(), lane=2,score=0}
 	cars = {
 		newCar(),
 	}
@@ -62,13 +60,23 @@ function love.update(dt)
 	-- Check for a collision with the player
 	local collision = false
 	for k, c in pairs(cars) do
-		if c.lane == player.lane and math.abs(c.y - player.y) then
+		if c.lane == player.lane and math.abs(c.y - player.y) < settings.car_radius * 2 then
+			collision = true
 			print('GAME OVER')
 		end
 	end
+	if collision == true then
+		cars = {}
+		player = {lane = 2, score = 0}
+	end
+
+	-- Add a score to the player
+	player.score = player.score + dt
 end
 
 function love.draw()
+	love.graphics.setColor(0, 0, 1)
+	love.graphics.print("Score: "..player.score, 0, 0)
 	love.graphics.setColor(1, 0, 0)
 	for k,c in pairs(cars) do
 		drawCar(c)
