@@ -1,4 +1,5 @@
 settings = {N_LANES = 4, MAX_CARS=10}
+gfx = {}
 
 function filter_inplace(arr, func)
     local new_index = 1
@@ -15,17 +16,25 @@ end
 function newCar()
 	return {
 		lane = math.random(0,settings.N_LANES + 1),
-		y = 0
+		y = 0,
+		gfx = math.random(1,4)
 	}
 end
 
 function love.load()
 	settings.lane_width = love.graphics.getWidth() / 4
 	settings.car_radius = settings.lane_width / 2 - settings.lane_width / 10
-	player = {y = love.graphics.getHeight(), lane=2,score=0}
+	player = {y = love.graphics.getHeight(), lane=2,score=0, gfx=4}
 	cars = {
 		newCar(),
 	}
+	gfx = {
+		cars = {
+		}
+	}
+	for i=1,5 do
+		table.insert(gfx.cars, love.graphics.newImage('resources/car-'..i..'.png'))
+	end
 end
 
 function love.update(dt)
@@ -71,7 +80,7 @@ function love.update(dt)
 	if collision == true then
 		settings.game_over = true
 		cars = {}
-		player = {lane = 2, score = 0, y=love.graphics.getHeight()}
+		player = {lane = 2, score = 0, y=love.graphics.getHeight(), gfx=4}
 	end
 
 	-- Add a score to the player
@@ -109,6 +118,6 @@ function love.keypressed(key)
 end
 
 function drawCar(c)
-	love.graphics.circle('fill', xFromLane(c.lane), c.y, settings.car_radius)
+	love.graphics.draw(gfx.cars[c.gfx], xFromLane(c.lane), c.y)
 end
 
