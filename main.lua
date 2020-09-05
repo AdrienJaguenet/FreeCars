@@ -1,6 +1,6 @@
 player = {}
 cars = {}
-settings = {}
+settings = {N_LANES = 4}
 
 function filter_inplace(arr, func)
     local new_index = 1
@@ -16,14 +16,14 @@ end
 
 function newCar()
 	return {
-		x = math.random(0,5) * settings.lane_width + settings.lane_width * 2,
+		x = xFromLane(math.random(0,settings.N_LANES + 1)) ,
 		y = 0
 	}
 end
 
 function love.load()
 	settings.lane_width = love.graphics.getWidth() / 4
-	player = {x = love.graphics.getWidth() / 2, y = love.graphics.getHeight()}
+	player = {x = xFromLane(2), y = love.graphics.getHeight(), lane=2}
 	cars = {
 		newCar(),
 	}
@@ -51,6 +51,20 @@ function love.draw()
 	end
 	love.graphics.setColor(0, 1, 0)
 	drawCar(player)
+end
+
+function xFromLane(n)
+	return n * settings.lane_width + settings.lane_width / 2
+end
+
+function love.keypressed(key)
+	if key == 'left' then
+		player.lane = math.max(player.lane - 1, 0)
+		player.x = xFromLane(player.lane)
+	elseif key == 'right'  then
+		player.lane = math.min(player.lane + 1, settings.N_LANES)
+		player.x = xFromLane(player.lane)
+	end
 end
 
 function drawCar(c)
