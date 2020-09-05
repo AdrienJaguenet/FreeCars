@@ -1,7 +1,5 @@
 settings = {N_LANES = 5, MAX_CARS=10, BORDER=60}
 gfx = {}
-carsound = love.audio.newSource("resources/car-loop.wav", "static")
-music = love.audio.newSource("resources/music.wav", "stream")
 
 function filter_inplace(arr, func)
     local new_index = 1
@@ -42,10 +40,17 @@ function love.load()
 	}
 	settings.car_radius = gfx.cars[1]:getHeight()/2
 
-	carsound:setLooping(true)
-	carsound:play()
-	music:setLooping(true)
-	music:play()
+	sfx = {
+		engine = love.audio.newSource("resources/car-loop.wav", "static"),
+		steer = love.audio.newSource("resources/steer.wav", "static"),
+		crash = love.audio.newSource("resources/crash.wav", "static"),
+		music = love.audio.newSource("resources/music.wav", "stream")
+	}
+
+	sfx.engine:setLooping(true)
+	sfx.engine:play()
+	sfx.music:setLooping(true)
+	sfx.music:play()
 
 	resetPlayer()
 end
@@ -93,7 +98,8 @@ function love.update(dt)
 	end
 	if collision == true then
 		settings.game_over = true
-		carsound:pause()
+		sfx.engine:pause()
+		sfx.crash:play()
 		cars = {}
 	end
 
@@ -124,13 +130,19 @@ end
 
 function love.keypressed(key)
 	if key == 'left' then
-		player.lane = math.max(player.lane - 1, 0)
+		if player.lane > 0 then
+			player.lane = player.lane - 1
+			sfx.steer:play()
+		end
 	elseif key == 'right'  then
-		player.lane = math.min(player.lane + 1, settings.N_LANES - 1)
+		if player.lane < settings.N_LANES - 1 then
+			player.lane = player.lane + 1
+			sfx.steer:play()
+		end
 	elseif key == 'space' then
 		settings.game_over = false
 		resetPlayer()
-		carsound:play()
+		sfx.engine:play()
 	end
 end
 
