@@ -1,4 +1,4 @@
-settings = {N_LANES = 4, MAX_CARS=10}
+settings = {N_LANES = 4, MAX_CARS=10, BORDER=60}
 gfx = {}
 
 function filter_inplace(arr, func)
@@ -24,11 +24,13 @@ end
 function love.load()
 	settings.lane_width = love.graphics.getWidth() / 4
 	settings.car_radius = settings.lane_width / 2 - settings.lane_width / 10
-	player = {y = love.graphics.getHeight(), lane=2,score=0, gfx=4}
+	love.window.setMode(640,480)
+	resetPlayer()
 	cars = {
 		newCar(),
 	}
 	gfx = {
+		background = love.graphics.newImage('resources/background-1.png'),
 		cars = {
 		}
 	}
@@ -80,7 +82,7 @@ function love.update(dt)
 	if collision == true then
 		settings.game_over = true
 		cars = {}
-		player = {lane = 2, score = 0, y=love.graphics.getHeight(), gfx=4}
+		resetPlayer()
 	end
 
 	-- Add a score to the player
@@ -88,23 +90,24 @@ function love.update(dt)
 end
 
 function love.draw()
+	love.graphics.draw(gfx.background)
 	if not settings.game_over then
-		love.graphics.setColor(0, 0, 1)
-		love.graphics.print("Score: "..player.score, 0, 0)
 		love.graphics.setColor(1, 0, 0)
+		love.graphics.print("Score: "..player.score, 0, 0)
+		love.graphics.reset()
 		for k,c in pairs(cars) do
 			drawCar(c)
 		end
-		love.graphics.setColor(0, 1, 0)
 		drawCar(player)
 	else
 		love.graphics.setColor(0, 0, 1)
 		love.graphics.print("GAME OVER!\nScore: "..player.score, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+		love.graphics.reset()
 	end
 end
 
 function xFromLane(n)
-	return n * settings.lane_width + settings.lane_width / 2
+	return n * settings.lane_width + settings.lane_width / 2 + settings.BORDER
 end
 
 function love.keypressed(key)
@@ -115,6 +118,10 @@ function love.keypressed(key)
 	elseif key == 'space' then
 		settings.game_over = false
 	end
+end
+
+function resetPlayer()
+	player = {y = love.graphics.getHeight() - settings.car_radius, lane=2,score=0, gfx=4}
 end
 
 function drawCar(c)
