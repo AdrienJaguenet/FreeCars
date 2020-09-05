@@ -16,13 +16,14 @@ end
 
 function newCar()
 	return {
-		x = xFromLane(math.random(0,settings.N_LANES + 1)) ,
+		x = xFromLane(math.random(0,settings.N_LANES + 1)),
 		y = 0
 	}
 end
 
 function love.load()
 	settings.lane_width = love.graphics.getWidth() / 4
+	settings.car_radius = settings.lane_width / 2 - settings.lane_width / 10
 	player = {x = xFromLane(2), y = love.graphics.getHeight(), lane=2}
 	cars = {
 		newCar(),
@@ -68,6 +69,6 @@ function love.keypressed(key)
 end
 
 function drawCar(c)
-	love.graphics.circle('fill', c.x, c.y, 20)
+	love.graphics.circle('fill', c.x, c.y, settings.car_radius)
 end
 
