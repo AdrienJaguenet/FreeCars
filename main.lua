@@ -1,6 +1,6 @@
 player = {}
 cars = {}
-settings = {N_LANES = 4}
+settings = {N_LANES = 4, MAX_CARS=10}
 
 function filter_inplace(arr, func)
     local new_index = 1
@@ -34,12 +34,12 @@ function love.update(dt)
 	local missing_cars = 0
 	for i=1,n do
 		local c = cars[i]
-		c.y = c.y + 500 * dt
+		c.y = c.y + 250 * dt
 	end
 
 	filter_inplace(cars, function(c) return c.y < love.graphics.getHeight() end)
 
-	for i=0,4-#cars do
+	if #cars < settings.MAX_CARS then
 		table.insert(cars, newCar())
 	end
 end
