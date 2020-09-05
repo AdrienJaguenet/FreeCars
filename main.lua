@@ -24,6 +24,7 @@ end
 function love.load()
 	love.window.setMode(640,480)
 	settings.lane_width = (love.graphics.getWidth() - settings.BORDER * 2) / settings.N_LANES
+	bg_y = 0
 	cars = {
 		newCar(),
 	}
@@ -32,6 +33,7 @@ function love.load()
 		cars = {
 		}
 	}
+	gfx.background:setWrap('repeat', 'repeat')
 	for i=1,5 do
 		table.insert(gfx.cars, love.graphics.newImage('resources/car-'..i..'.png'))
 	end
@@ -52,6 +54,7 @@ function love.update(dt)
 	for k, c in pairs(cars) do
 		c.y = c.y + 250 * dt
 	end
+	bg_y = bg_y + 250 * dt
 
 	filter_inplace(cars, function(c) return c.y < love.graphics.getHeight() end)
 
@@ -75,7 +78,7 @@ function love.update(dt)
 	local collision = false
 	for k, c in pairs(cars) do
 		if c.lane == player.lane and math.abs(c.y - player.y) < settings.car_radius * 2 then
-			collision = true
+	--		collision = true
 			print('GAME OVER')
 		end
 	end
@@ -90,7 +93,9 @@ function love.update(dt)
 end
 
 function love.draw()
-	love.graphics.draw(gfx.background)
+	local actual_bg_y = bg_y % gfx.background:getHeight()
+	love.graphics.draw(gfx.background, 0, 0, 0, 1, 1, 0, -actual_bg_y) 
+	love.graphics.draw(gfx.background, 0, 0, 0, 1, 1, 0, gfx.background:getHeight() - actual_bg_y)
 	if not settings.game_over then
 		love.graphics.setColor(1, 0, 0)
 		love.graphics.print("Score: "..player.score, 0, 0)
