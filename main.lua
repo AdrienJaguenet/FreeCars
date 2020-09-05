@@ -93,6 +93,7 @@ function love.update(dt)
 	end
 	if collision == true then
 		settings.game_over = true
+		carsound:pause()
 		cars = {}
 	end
 
@@ -128,6 +129,7 @@ function love.keypressed(key)
 	elseif key == 'space' then
 		settings.game_over = false
 		resetPlayer()
+		carsound:play()
 	end
 end
 
