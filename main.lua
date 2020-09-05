@@ -1,4 +1,4 @@
-settings = {N_LANES = 6, MAX_CARS=10, BORDER=60}
+settings = {N_LANES = 5, MAX_CARS=10, BORDER=60}
 gfx = {}
 
 function filter_inplace(arr, func)
@@ -22,8 +22,8 @@ function newCar()
 end
 
 function love.load()
-	settings.lane_width = love.graphics.getWidth() / settings.N_LANES
 	love.window.setMode(640,480)
+	settings.lane_width = (love.graphics.getWidth() - settings.BORDER * 2) / settings.N_LANES
 	cars = {
 		newCar(),
 	}
@@ -107,7 +107,7 @@ function love.draw()
 end
 
 function xFromLane(n)
-	return n * settings.lane_width + settings.lane_width / 2 + settings.BORDER -- gfx.cars[1]:getWidth()/2
+	return n * settings.lane_width + settings.lane_width / 2 + settings.BORDER - gfx.cars[1]:getWidth()/2
 end
 
 function love.keypressed(key)
