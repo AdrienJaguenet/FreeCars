@@ -1,4 +1,4 @@
-settings = {N_LANES = 4, MAX_CARS=10, BORDER=60}
+settings = {N_LANES = 6, MAX_CARS=10, BORDER=60}
 gfx = {}
 
 function filter_inplace(arr, func)
@@ -22,10 +22,8 @@ function newCar()
 end
 
 function love.load()
-	settings.lane_width = love.graphics.getWidth() / 4
-	settings.car_radius = settings.lane_width / 2 - settings.lane_width / 10
+	settings.lane_width = love.graphics.getWidth() / settings.N_LANES
 	love.window.setMode(640,480)
-	resetPlayer()
 	cars = {
 		newCar(),
 	}
@@ -37,6 +35,8 @@ function love.load()
 	for i=1,5 do
 		table.insert(gfx.cars, love.graphics.newImage('resources/car-'..i..'.png'))
 	end
+	settings.car_radius = gfx.cars[1]:getHeight()/2
+	resetPlayer()
 end
 
 function love.update(dt)
@@ -107,7 +107,7 @@ function love.draw()
 end
 
 function xFromLane(n)
-	return n * settings.lane_width + settings.lane_width / 2 + settings.BORDER
+	return n * settings.lane_width + settings.lane_width / 2 + settings.BORDER -- gfx.cars[1]:getWidth()/2
 end
 
 function love.keypressed(key)
