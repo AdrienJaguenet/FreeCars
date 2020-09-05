@@ -1,5 +1,7 @@
 settings = {N_LANES = 5, MAX_CARS=10, BORDER=60}
 gfx = {}
+carsound = love.audio.newSource("resources/car-loop.wav", "static")
+music = love.audio.newSource("resources/music.wav", "stream")
 
 function filter_inplace(arr, func)
     local new_index = 1
@@ -16,7 +18,7 @@ end
 function newCar()
 	return {
 		lane = math.random(0,settings.N_LANES + 1),
-		y = 0,
+		y = -109,
 		gfx = math.random(1,4)
 	}
 end
@@ -38,6 +40,12 @@ function love.load()
 		table.insert(gfx.cars, love.graphics.newImage('resources/car-'..i..'.png'))
 	end
 	settings.car_radius = gfx.cars[1]:getHeight()/2
+
+	carsound:setLooping(true)
+	carsound:play()
+	music:setLooping(true)
+	music:play()
+
 	resetPlayer()
 end
 
