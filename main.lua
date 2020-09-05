@@ -113,7 +113,8 @@ function love.draw()
 		drawCar(player)
 		love.graphics.print("Score: "..string.format("%.2f", player.score), 0, 0)
 	else
-		love.graphics.print("GAME OVER!\nScore: "..string.format("%.2f", player.score), love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+		love.graphics.printf("GAME OVER!\nScore: "..string.format("%.2f", player.score).."\nPress space to continue", 
+			0, love.graphics.getHeight()/2, love.graphics.getWidth(), 'center')
 	end
 end
 
