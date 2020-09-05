@@ -16,8 +16,9 @@ end
 function newCar()
 	return {
 		lane = math.random(0,settings.N_LANES + 1),
-		y = 0,
-		gfx = math.random(1,4)
+		y = - (gfx.cars[1]:getHeight()),
+		gfx = math.random(1,4),
+		car=1
 	}
 end
 
@@ -25,9 +26,6 @@ function love.load()
 	love.window.setMode(640,480)
 	settings.lane_width = (love.graphics.getWidth() - settings.BORDER * 2) / settings.N_LANES
 	bg_y = 0
-	cars = {
-		newCar(),
-	}
 	gfx = {
 		background = love.graphics.newImage('resources/background-1.png'),
 		cars = {
@@ -37,6 +35,8 @@ function love.load()
 	for i=1,5 do
 		table.insert(gfx.cars, love.graphics.newImage('resources/car-'..i..'.png'))
 	end
+	cars = {
+	}
 	settings.car_radius = gfx.cars[1]:getHeight()/2
 	resetPlayer()
 end
@@ -78,7 +78,7 @@ function love.update(dt)
 	local collision = false
 	for k, c in pairs(cars) do
 		if c.lane == player.lane and math.abs(c.y - player.y) < settings.car_radius * 2 then
-	--		collision = true
+			collision = true
 			print('GAME OVER')
 		end
 	end
@@ -130,6 +130,10 @@ function resetPlayer()
 end
 
 function drawCar(c)
-	love.graphics.draw(gfx.cars[c.gfx], xFromLane(c.lane), c.y)
+	local rot = 0
+	if c.car then
+		rot = math.pi
+	end
+	love.graphics.draw(gfx.cars[c.gfx], xFromLane(c.lane), c.y, rot)
 end
 
