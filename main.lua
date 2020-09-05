@@ -41,7 +41,16 @@ function love.update(dt)
 	filter_inplace(cars, function(c) return c.y < love.graphics.getHeight() end)
 
 	if #cars < settings.MAX_CARS then
-		table.insert(cars, newCar())
+		local c = newCar()
+		local collision = false
+		for k,c_ in pairs(cars) do
+			if math.abs(c.y - c_.y) < 2 * settings.car_radius then
+				collision = true
+			end
+		end
+		if not collision then
+			table.insert(cars, newCar())
+		end
 	end
 end
 
