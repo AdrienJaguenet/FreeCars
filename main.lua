@@ -29,7 +29,8 @@ function love.load()
 	gfx = {
 		background = love.graphics.newImage('resources/background-1.png'),
 		cars = {
-		}
+		},
+		font = love.graphics.newFont('resources/fonts/LCDWinTT/LCD2B___.TTF', 32)
 	}
 	gfx.background:setWrap('repeat', 'repeat')
 	for i=1,5 do
@@ -85,7 +86,6 @@ function love.update(dt)
 	if collision == true then
 		settings.game_over = true
 		cars = {}
-		resetPlayer()
 	end
 
 	-- Add a score to the player
@@ -96,18 +96,15 @@ function love.draw()
 	local actual_bg_y = bg_y % gfx.background:getHeight()
 	love.graphics.draw(gfx.background, 0, 0, 0, 1, 1, 0, -actual_bg_y) 
 	love.graphics.draw(gfx.background, 0, 0, 0, 1, 1, 0, gfx.background:getHeight() - actual_bg_y)
+	love.graphics.setFont(gfx.font)
 	if not settings.game_over then
-		love.graphics.setColor(1, 0, 0)
-		love.graphics.print("Score: "..player.score, 0, 0)
-		love.graphics.reset()
 		for k,c in pairs(cars) do
 			drawCar(c)
 		end
 		drawCar(player)
+		love.graphics.print("Score: "..string.format("%.2f", player.score), 0, 0)
 	else
-		love.graphics.setColor(0, 0, 1)
-		love.graphics.print("GAME OVER!\nScore: "..player.score, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
-		love.graphics.reset()
+		love.graphics.print("GAME OVER!\nScore: "..string.format("%.2f", player.score), love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
 	end
 end
 
@@ -122,6 +119,7 @@ function love.keypressed(key)
 		player.lane = math.min(player.lane + 1, settings.N_LANES - 1)
 	elseif key == 'space' then
 		settings.game_over = false
+		resetPlayer()
 	end
 end
 
