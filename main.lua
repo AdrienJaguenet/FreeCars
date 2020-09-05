@@ -70,7 +70,8 @@ function love.update(dt)
 	end
 	if collision == true then
 		settings.game_over = true
-		player = {lane = 2, score = 0}
+		cars = {}
+		player = {lane = 2, score = 0, y=love.graphics.getHeight()}
 	end
 
 	-- Add a score to the player
@@ -88,7 +89,6 @@ function love.draw()
 		love.graphics.setColor(0, 1, 0)
 		drawCar(player)
 	else
-		cars = {}
 		love.graphics.setColor(0, 0, 1)
 		love.graphics.print("GAME OVER!\nScore: "..player.score, love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
 	end
